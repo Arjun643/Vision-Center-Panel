@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMedicines, markPrescriptionPrinted, removePatient } from '../store/slices/patientSlice';
-import { selectAllDoctors } from '../store/slices/doctorSlice';
-import { selectAllMedicines } from '../store/slices/medicineSlice';
 
 const DoctorPanel = ({ doctorId }) => {
   const dispatch = useDispatch();

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAllDoctors } from '../store/slices/doctorSlice';
-import { selectAllPatients } from '../store/slices/patientSlice';
 import PatientRegistrationForm from './PatientRegistrationForm';
 import DoctorPanel from './DoctorPanel';
 import ErrorBoundary from './ErrorBoundary';
