@@ -67,6 +67,7 @@ const DoctorPanel = ({ doctorId }) => {
   const [selectedMedicineIds, setSelectedMedicineIds] = useState([]);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [notifications, setNotifications] = useState([]);
+  const [priorityFilter, setPriorityFilter] = useState('All'); // Filter by priority
 
   // Debounce search term with 300ms delay
   useEffect(() => {
@@ -103,7 +104,14 @@ const DoctorPanel = ({ doctorId }) => {
         });
       }
 
-      // Sort by priority: High -> Medium -> Low
+      // Filter by priority
+      if (priorityFilter && priorityFilter !== 'All') {
+        filtered = filtered.filter(patient => {
+          return patient?.priority === priorityFilter;
+        });
+      }
+
+      // Always sort by priority: High -> Medium -> Low (as per assignment)
       const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
       filtered.sort((a, b) => {
         const aPriority = priorityOrder[a?.priority] || 2; // Default to Medium
@@ -116,7 +124,7 @@ const DoctorPanel = ({ doctorId }) => {
       console.error('Error in filteredAndSortedPatients:', error);
       return [];
     }
-  }, [allPatients, debouncedSearchTerm, doctorId]);
+  }, [allPatients, debouncedSearchTerm, doctorId, priorityFilter]);
 
   // Early return after ALL hooks are called
   if (!doctorId) {
@@ -318,14 +326,35 @@ const DoctorPanel = ({ doctorId }) => {
         <div className="patient-queue">
           <h3>Patient Queue ({filteredAndSortedPatients.length})</h3>
           
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search patients by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
+          <div className="search-and-sort-container" style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+            <div className="search-container" style={{ flex: 1 }}>
+              <input
+                type="text"
+                placeholder="Search patients by name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+              />
+            </div>
+            <div className="priority-filter-container">
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                style={{ 
+                  padding: '8px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #ddd',
+                  backgroundColor: 'white',
+                  minWidth: '150px'
+                }}
+              >
+                <option value="All">All Priorities</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
+              </select>
+            </div>
           </div>
 
           <div className="patient-list">
@@ -374,8 +403,22 @@ const DoctorPanel = ({ doctorId }) => {
                       }}
                     >
                       <div className="patient-info">
-                        <div className="patient-name" style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px', color: '#333' }}>
-                          {patient.name || 'Unknown Patient'}
+                        <div className="patient-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                          <div className="patient-name" style={{ fontWeight: 'bold', fontSize: '16px', color: '#333' }}>
+                            {patient.name || 'Unknown Patient'}
+                          </div>
+                          <div className="patient-status" style={{
+                            padding: '2px 8px',
+                            borderRadius: '12px',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            backgroundColor: patient.status === 'pending' ? '#fff3cd' : '#d4edda',
+                            color: patient.status === 'pending' ? '#856404' : '#155724',
+                            border: `1px solid ${patient.status === 'pending' ? '#ffeaa7' : '#c3e6cb'}`
+                          }}>
+                            {patient.status || 'Pending'}
+                          </div>
                         </div>
                         <div className="patient-details" style={{ color: '#666', margin: '5px 0', fontSize: '14px' }}>
                           Age: {patient.age || 'N/A'} | Priority: 

@@ -68,6 +68,9 @@ const PatientRegistrationForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Simulate loading delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Convert age to number and add timestamp
       const patientData = {
         ...formData,
@@ -91,8 +94,11 @@ const PatientRegistrationForm = () => {
       const assignedDoctor = doctors.find(d => d.id === patientData.doctorId);
       setSuccessMessage(`Patient ${patientData.name} registered successfully and assigned to ${assignedDoctor?.name || 'Doctor'}!`);
       
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(''), 3000);
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccessMessage(''), 5000);
       
     } catch (error) {
       setErrors({ submit: 'Error registering patient. Please try again.' });
@@ -199,8 +205,26 @@ const PatientRegistrationForm = () => {
           type="submit" 
           className="submit-btn"
           disabled={isSubmitting}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            opacity: isSubmitting ? 0.7 : 1,
+            cursor: isSubmitting ? 'not-allowed' : 'pointer'
+          }}
         >
-          {isSubmitting ? 'Registering...' : 'Register Patient'}
+          {isSubmitting && (
+            <div style={{
+              width: '16px',
+              height: '16px',
+              border: '2px solid #ffffff',
+              borderTop: '2px solid transparent',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+          )}
+          {isSubmitting ? 'Registering Patient...' : 'Register Patient'}
         </button>
       </form>
     </div>
