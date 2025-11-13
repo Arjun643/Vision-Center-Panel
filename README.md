@@ -140,8 +140,8 @@ src/
 
 ---
 
-**Assignment completed by:** Arjun  
-**Submission Date:** November 12, 2025  
-**Development Time:** ~2 hours  
+**Assignment completed by:** Arjun Maurya  
+**Submission Date:** November 13, 2025  
+**Development Time:** ~10 hours  
 
 The application is fully functional and ready for demonstration during the interview process.
